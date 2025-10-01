@@ -24,6 +24,26 @@ export const useAppointments = (start: Date, end: Date) => {
   });
 };
 
+// HOOK: Fetch appointments for a specific client
+export const useAppointmentsByClient = (clientId: number | null) => {
+    return useQuery({
+        queryKey: ['appointments', { clientId }],
+        queryFn: async (): Promise<AppointmentEvent[]> => {
+            if (!clientId) return [];
+            const { data, error } = await supabase
+                .from('appointments')
+                .select('*, procedures(*)')
+                .eq('client_id', clientId)
+                .order('scheduled_at', { ascending: false });
+
+            if (error) throw new Error(error.message);
+            return data || [];
+        },
+        enabled: !!clientId, // Only run query if clientId is not null
+    });
+};
+
+
 // HOOK: Fetch all procedures
 export const useProcedures = () => {
   return useQuery({
@@ -67,6 +87,21 @@ export const useSearchClients = (searchTerm: string) => {
     },
     enabled: !!searchTerm,
   });
+};
+
+// HOOK: Create a new client
+export const useCreateClient = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (newClient: { name: string, email: string, phone?: string, gender?: string }) => {
+            const { data, error } = await supabase.from('clients').insert(newClient).select();
+            if (error) throw new Error(error.message);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['clients'] });
+        },
+    });
 };
 
 // HOOK: Create a new appointment

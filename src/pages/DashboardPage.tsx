@@ -4,6 +4,7 @@ import moment from 'moment';
 import { PlusCircle, ArrowUp, ArrowDown, DollarSign, BarChart, Send, Users, Calendar as CalendarIcon } from 'lucide-react';
 import { useAppointments } from '../hooks/api';
 import AppointmentModal from '../components/AppointmentModal';
+import { AppointmentEvent } from '../types';
 
 const localizer = momentLocalizer(moment);
 
@@ -27,10 +28,11 @@ const StatCard = ({ title, value, change, changeType, icon: Icon, iconBgColor })
 
 const DashboardPage = () => {
   const [date, setDate] = useState(new Date());
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAppointmentModalOpen, setAppointmentModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [isNewClientModalOpen, setNewClientModalOpen] = useState(false);
 
-  // Simplified data fetching for the entire month for the calendar
+
   const { data: appointments, isLoading, refetch } = useAppointments(moment(date).startOf('month').toDate(), moment(date).endOf('month').toDate());
 
   const events = useMemo(() => {
@@ -44,19 +46,37 @@ const DashboardPage = () => {
   }, [appointments]);
 
   const todaysAppointments = useMemo(() => {
-      return (appointments ?? []).filter(appt => moment(appt.scheduled_at).isSame(new Date(), 'day'));
+      if (!appointments) return [];
+      return appointments.filter(appt => moment(appt.scheduled_at).isSame(new Date(), 'day'));
   }, [appointments]);
 
   const handleNavigate = useCallback((newDate) => setDate(newDate), []);
   const handleSelectSlot = useCallback((slotInfo) => {
     setSelectedSlot({ start: slotInfo.start });
-    setIsModalOpen(true);
+    setAppointmentModalOpen(true);
   }, []);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+   const handleSelectEvent = useCallback((event) => {
+    setSelectedSlot(event);
+    setAppointmentModalOpen(true);
+  }, []);
+
+  const closeAppointmentModal = () => {
+    setAppointmentModalOpen(false);
     setSelectedSlot(null);
     refetch();
+  };
+  
+  const eventStyleGetter = (event) => {
+    const backgroundColor = event.resource?.procedures?.color_code || '#ddc992';
+    return {
+        style: {
+            backgroundColor,
+            opacity: 0.8,
+            border: 'none',
+            color: '#3a3c41'
+        }
+    };
   };
 
   return (
@@ -66,15 +86,7 @@ const DashboardPage = () => {
                 <h1 className="text-3xl font-bold text-onyx">Dashboard</h1>
                 <p className="text-onyx/70">Manage your clinic appointments and schedule.</p>
             </div>
-            <div className="flex items-center gap-4">
-                <p className="text-sm text-onyx/80 hidden md:block">{moment().format('dddd, MMMM D, YYYY')}</p>
-                <button 
-                    onClick={() => handleSelectSlot({ start: new Date() })}
-                    className="flex items-center gap-2 bg-gold text-onyx px-4 py-2 rounded-lg shadow-sm hover:bg-gold/90 transition-colors font-semibold"
-                >
-                    <PlusCircle size={20} /> New Appointment
-                </button>
-            </div>
+             <p className="text-sm text-onyx/80 hidden md:block">{moment().format('dddd, MMMM D, YYYY')}</p>
         </div>
 
         {/* Stat Cards */}
@@ -87,26 +99,46 @@ const DashboardPage = () => {
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white p-4 rounded-lg shadow-lg h-[60vh]">
-                <Calendar
-                    localizer={localizer}
-                    events={events}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: '100%' }}
-                    date={date}
-                    onNavigate={handleNavigate}
-                    onSelectSlot={handleSelectSlot}
-                    selectable
-                    views={['month', 'week', 'day']}
-                    view='month'
-                />
+            <div className="lg:col-span-2 flex flex-col">
+                <div className="bg-white p-4 rounded-lg shadow-lg h-[60vh]">
+                    {isLoading ? <p>Loading...</p> : 
+                        <Calendar
+                            localizer={localizer}
+                            events={events}
+                            startAccessor="start"
+                            endAccessor="end"
+                            style={{ height: '100%' }}
+                            date={date}
+                            onNavigate={handleNavigate}
+                            onSelectSlot={handleSelectSlot}
+                            onSelectEvent={handleSelectEvent}
+                            eventPropGetter={eventStyleGetter}
+                            selectable
+                            views={['month', 'week', 'day']}
+                            view='month'
+                        />
+                    }
+                </div>
+                 <div className="flex items-center gap-4 mt-4">
+                    <button 
+                        onClick={() => handleSelectSlot({ start: new Date() })}
+                        className="flex items-center gap-2 bg-indian-red text-white px-4 py-2 rounded-lg shadow-sm hover:bg-indian-red/90 transition-colors font-semibold"
+                    >
+                        <PlusCircle size={20} /> New Appointment
+                    </button>
+                     <button 
+                        onClick={() => setNewClientModalOpen(true)}
+                        className="flex items-center gap-2 bg-indian-red text-white px-4 py-2 rounded-lg shadow-sm hover:bg-indian-red/90 transition-colors font-semibold"
+                    >
+                        <PlusCircle size={20} /> New Client
+                    </button>
+                </div>
             </div>
             <div className="space-y-6">
                 <div className="bg-white p-4 rounded-lg shadow-lg">
                     <h3 className="font-semibold text-onyx mb-3">Today's Appointments</h3>
                     {todaysAppointments.length > 0 ? (
-                        <ul className="space-y-2">
+                        <ul className="space-y-2 max-h-48 overflow-y-auto">
                             {todaysAppointments.map(appt => (
                                 <li key={appt.id} className="text-sm p-2 rounded-md bg-seashell-600">
                                     <p className="font-medium">{appt.clients.name}</p>
@@ -129,7 +161,9 @@ const DashboardPage = () => {
                 </div>
             </div>
         </div>
-        <AppointmentModal isOpen={isModalOpen} onClose={closeModal} event={selectedSlot} />
+        <AppointmentModal isOpen={isAppointmentModalOpen} onClose={closeAppointmentModal} event={selectedSlot} />
+        {/* Placeholder for NewClientModal - you'll need to create this component */}
+        {/* <NewClientModal isOpen={isNewClientModalOpen} onClose={() => setNewClientModalOpen(false)} onClientCreated={refetch} /> */}
     </div>
   );
 };

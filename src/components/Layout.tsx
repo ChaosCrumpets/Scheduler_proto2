@@ -10,7 +10,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr] bg-seashell">
-      <div className="hidden border-r border-onyx/10 bg-seashell lg:block">
+      <div className="hidden border-r border-onyx/10 bg-seashell-600 lg:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center border-b border-onyx/10 px-6">
             <Link to="/" className="flex items-center gap-2 font-bold text-onyx text-lg">
@@ -39,7 +39,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
           <div className="mt-auto p-4 border-t border-onyx/10">
             <div className="flex items-center gap-3">
-                <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="User" className="h-10 w-10 rounded-full object-cover" />
+                <img src="https://i.pravatar.cc/40?img=1" alt="User" className="h-10 w-10 rounded-full" />
                 <div>
                     <p className="font-semibold text-onyx">Dr. Sarah Williams</p>
                     <p className="text-xs text-onyx/70">Administrator</p>
