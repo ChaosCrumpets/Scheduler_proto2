@@ -88,7 +88,7 @@ const AppointmentModal = ({ isOpen, onClose, event }: AppointmentModalProps) => 
 
   const handleCancel = () => {
     if (isEditing && event?.id && confirm('Are you sure you want to cancel this appointment?')) {
-        cancelAppointment.mutate(event.id, { onSuccess: onClose });
+        cancelAppointment.mutate([event.id], { onSuccess: onClose });
     }
   };
 
@@ -128,6 +128,7 @@ const AppointmentModal = ({ isOpen, onClose, event }: AppointmentModalProps) => 
                 render={({ field }) => (
                   <DatePicker selected={field.value} onChange={field.onChange} showTimeSelect
                     dateFormat="MMMM d, yyyy h:mm aa"
+                    className="w-full p-2 border border-onyx/20 rounded-md bg-seashell-700"
                   />
                 )}
               />
@@ -136,7 +137,7 @@ const AppointmentModal = ({ isOpen, onClose, event }: AppointmentModalProps) => 
 
             <div>
               <label className="block text-sm font-medium text-onyx/80">Notes</label>
-              <textarea {...control.register('notes')} rows={3} className="w-full border border-input rounded-md shadow-sm p-2"/>
+              <textarea {...control.register('notes')} rows={3} className="w-full p-2 border border-onyx/20 rounded-md bg-seashell-700"/>
             </div>
 
             <div className="pt-4 flex justify-between items-center">
@@ -149,7 +150,7 @@ const AppointmentModal = ({ isOpen, onClose, event }: AppointmentModalProps) => 
                 </button>
               </div>
               {isEditing && (
-                <button type="button" onClick={handleCancel} className="bg-indian-red text-white px-4 py-2 rounded-md hover:bg-indian-red/90">
+                <button type="button" onClick={handleCancel} className="bg-indian-red/80 text-white px-4 py-2 rounded-md hover:bg-indian-red">
                     Cancel Appointment
                 </button>
               )}

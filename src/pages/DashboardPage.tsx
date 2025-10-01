@@ -5,11 +5,11 @@ import { PlusCircle, ArrowUp, ArrowDown, DollarSign, BarChart, Send, Users, Cale
 import { useAppointments } from '../hooks/api';
 import AppointmentModal from '../components/AppointmentModal';
 import { AppointmentEvent } from '../types';
+import NewClientModal from '../components/NewClientModal';
 
 const localizer = momentLocalizer(moment);
 
-// A small component for the stat cards
-const StatCard = ({ title, value, change, changeType, icon: Icon, iconBgColor }) => (
+const DashboardStatCard = ({ title, value, change, changeType, icon: Icon, iconBgColor }) => (
     <div className="bg-white p-4 rounded-lg shadow-sm flex items-start justify-between">
         <div>
             <p className="text-sm text-onyx/70">{title}</p>
@@ -31,7 +31,6 @@ const DashboardPage = () => {
   const [isAppointmentModalOpen, setAppointmentModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [isNewClientModalOpen, setNewClientModalOpen] = useState(false);
-
 
   const { data: appointments, isLoading, refetch } = useAppointments(moment(date).startOf('month').toDate(), moment(date).endOf('month').toDate());
 
@@ -79,6 +78,11 @@ const DashboardPage = () => {
     };
   };
 
+  const onClientCreated = () => {
+      setNewClientModalOpen(false);
+      // could also refetch clients list if it were displayed here
+  }
+
   return (
     <div className="space-y-6">
         <div className="flex justify-between items-center">
@@ -91,10 +95,10 @@ const DashboardPage = () => {
 
         {/* Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard title="Today's Appointments" value={todaysAppointments.length} change="+15%" changeType="increase" icon={CalendarIcon} iconBgColor="bg-peach-yellow/50" />
-            <StatCard title="This Week" value="8" change="-8%" changeType="decrease" icon={BarChart} iconBgColor="bg-peach-yellow/50" />
-            <StatCard title="No-Show Rate" value="0.0%" change="-1.2%" changeType="decrease" icon={Users} iconBgColor="bg-peach-yellow/50" />
-            <StatCard title="Revenue Today" value="$0" change="+22%" changeType="increase" icon={DollarSign} iconBgColor="bg-peach-yellow/50" />
+            <DashboardStatCard title="Today's Appointments" value={todaysAppointments.length} change="+15%" changeType="increase" icon={CalendarIcon} iconBgColor="bg-peach-yellow/50" />
+            <DashboardStatCard title="This Week" value="8" change="-8%" changeType="decrease" icon={BarChart} iconBgColor="bg-peach-yellow/50" />
+            <DashboardStatCard title="No-Show Rate" value="0.0%" change="-1.2%" changeType="decrease" icon={Users} iconBgColor="bg-peach-yellow/50" />
+            <DashboardStatCard title="Revenue Today" value="$0" change="+22%" changeType="increase" icon={DollarSign} iconBgColor="bg-peach-yellow/50" />
         </div>
 
         {/* Main Content */}
@@ -162,8 +166,7 @@ const DashboardPage = () => {
             </div>
         </div>
         <AppointmentModal isOpen={isAppointmentModalOpen} onClose={closeAppointmentModal} event={selectedSlot} />
-        {/* Placeholder for NewClientModal - you'll need to create this component */}
-        {/* <NewClientModal isOpen={isNewClientModalOpen} onClose={() => setNewClientModalOpen(false)} onClientCreated={refetch} /> */}
+        <NewClientModal isOpen={isNewClientModalOpen} onClose={() => setNewClientModalOpen(false)} onClientCreated={onClientCreated} />
     </div>
   );
 };

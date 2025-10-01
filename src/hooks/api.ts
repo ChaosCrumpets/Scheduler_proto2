@@ -15,8 +15,8 @@ export const useAppointments = (start: Date, end: Date) => {
           procedures (*)
         `)
         .gte('scheduled_at', start.toISOString())
-        .lte('scheduled_at', end.toISOString())
-        .not('status', 'eq', 'CANCELED');
+        .lte('scheduled_at', end.toISOString());
+        // .not('status', 'eq', 'CANCELED'); // Temporarily show canceled to manage them
 
       if (error) throw new Error(error.message);
       return data || [];
@@ -37,9 +37,9 @@ export const useAppointmentsByClient = (clientId: number | null) => {
                 .order('scheduled_at', { ascending: false });
 
             if (error) throw new Error(error.message);
-            return data || [];
+            return (data as any) || [];
         },
-        enabled: !!clientId, // Only run query if clientId is not null
+        enabled: !!clientId, 
     });
 };
 
@@ -49,7 +49,7 @@ export const useProcedures = () => {
   return useQuery({
     queryKey: ['procedures'],
     queryFn: async (): Promise<Procedure[]> => {
-      const { data, error } = await supabase.from('procedures').select('*');
+      const { data, error } = await supabase.from('procedures').select('*').order('name');
       if (error) throw new Error(error.message);
       return data || [];
     }
@@ -60,7 +60,7 @@ export const useProcedures = () => {
 export const useClients = () => {
     return useQuery({
         queryKey: ['clients'],
-        queryFn: async () => {
+        queryFn: async (): Promise<Client[]> => {
             const { data, error } = await supabase
                 .from('clients')
                 .select('*')
@@ -135,15 +135,15 @@ export const useUpdateAppointment = () => {
     });
 };
 
-// HOOK: Cancel an appointment
+// HOOK: Cancel appointment(s)
 export const useCancelAppointment = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (appointmentId: number) => {
+        mutationFn: async (appointmentIds: number[]) => {
             const { data, error } = await supabase
                 .from('appointments')
                 .update({ status: 'CANCELED' })
-                .eq('id', appointmentId);
+                .in('id', appointmentIds);
             if (error) throw new Error(error.message);
             return data;
         },

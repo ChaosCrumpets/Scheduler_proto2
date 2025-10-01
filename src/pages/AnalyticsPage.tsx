@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowUp, ArrowDown, DollarSign, BarChart, Users, XCircle, CheckCircle, Calendar as CalendarIcon } from 'lucide-react';
 
-const StatCard = ({ title, value, change, changeType, icon: Icon, iconBgColor }) => (
+const AnalyticsStatCard = ({ title, value, change, changeType, icon: Icon }) => (
     <div className="bg-white p-4 rounded-lg shadow-sm">
         <p className="text-sm text-onyx/70 font-medium">{title}</p>
         <p className="text-3xl font-bold text-onyx mt-2">{value}</p>
@@ -22,10 +22,10 @@ const AnalyticsPage = () => {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard title="Total Revenue" value="$12,450" change="+20.1%" changeType="increase" icon={DollarSign} />
-                <StatCard title="New Clients" value="32" change="+12.5%" changeType="increase" icon={Users} />
-                <StatCard title="Cancellation Rate" value="4.8%" change="-1.2%" changeType="decrease" icon={XCircle} />
-                <StatCard title="Avg. Daily Appts" value="8" change="+5%" changeType="increase" icon={CalendarIcon} />
+                <AnalyticsStatCard title="Total Revenue" value="$12,450" change="+20.1%" changeType="increase" icon={DollarSign} />
+                <AnalyticsStatCard title="New Clients" value="32" change="+12.5%" changeType="increase" icon={Users} />
+                <AnalyticsStatCard title="Cancellation Rate" value="4.8%" change="-1.2%" changeType="decrease" icon={XCircle} />
+                <AnalyticsStatCard title="Avg. Daily Appts" value="8" change="+5%" changeType="increase" icon={CalendarIcon} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
