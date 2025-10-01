@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 21 81% 96%; /* seashell */
+    --foreground: 223 6% 24%; /* onyx */
+    --card: 0 0% 100%;
+    --card-foreground: 223 6% 24%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 223 6% 24%;
+    --primary: 356 74% 64%; /* indian-red */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 44 54% 60%; /* gold */
+    --secondary-foreground: 223 6% 24%;
+    --muted: 21 81% 98%; /* lighter seashell */
+    --muted-foreground: 223 6% 40%;
+    --accent: 44 52% 72%; /* peach-yellow */
+    --accent-foreground: 223 6% 24%;
+    --destructive: 356 74% 64%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 223 6% 85%;
+    --input: 223 6% 85%;
+    --ring: 356 74% 64%;
+    --radius: 0.5rem;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom styles for react-datepicker */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+.react-datepicker__input-container input {
+    @apply w-full border border-input rounded-md shadow-sm p-2;
+}
