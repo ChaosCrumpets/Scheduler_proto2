@@ -16,7 +16,6 @@ export const useAppointments = (start: Date, end: Date) => {
         `)
         .gte('scheduled_at', start.toISOString())
         .lte('scheduled_at', end.toISOString());
-        // .not('status', 'eq', 'CANCELED'); // Temporarily show canceled to manage them
 
       if (error) throw new Error(error.message);
       return data || [];

@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowUp, ArrowDown, DollarSign, BarChart, Users, XCircle, CheckCircle, Calendar as CalendarIcon } from 'lucide-react';
 
 const AnalyticsStatCard = ({ title, value, change, changeType, icon: Icon }) => (

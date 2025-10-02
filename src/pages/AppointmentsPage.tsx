@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { PlusCircle, Calendar, Clock, CheckCircle, XCircle } from 'lucide-react';
-import moment from 'moment';
 import { useAppointments, useCancelAppointment } from '../hooks/api';
+import { PlusCircle, XCircle, Calendar, Clock, CheckCircle, X } from 'lucide-react';
+import moment from 'moment';
 import AppointmentModal from '../components/AppointmentModal';
 
 const AppointmentsStatCard = ({ title, value, icon: Icon }) => (
@@ -22,12 +22,17 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-                <h3 className="text-lg font-bold text-onyx">{title}</h3>
-                <p className="text-onyx/80 mt-2 mb-6">{message}</p>
-                <div className="flex justify-end gap-4">
-                    <button onClick={onClose} className="px-4 py-2 rounded-md bg-onyx/10 text-onyx font-semibold">No</button>
-                    <button onClick={onConfirm} className="px-4 py-2 rounded-md bg-indian-red text-white font-semibold">Yes</button>
+            <div className="bg-white rounded-lg shadow-lg">
+                 <div className="flex justify-between items-center p-4 border-b border-onyx/10">
+                    <h3 className="text-lg font-bold text-onyx">{title}</h3>
+                    <button onClick={onClose} className="text-onyx/50 hover:text-onyx"><X size={24} /></button>
+                </div>
+                <div className="p-6">
+                    <p className="text-onyx/80 mb-6">{message}</p>
+                    <div className="flex justify-end gap-4">
+                        <button onClick={onClose} className="px-4 py-2 rounded-md bg-onyx/10 text-onyx font-semibold">No</button>
+                        <button onClick={onConfirm} className="px-4 py-2 rounded-md bg-indian-red text-white font-semibold">Yes</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,7 +115,7 @@ const AppointmentsPage = () => {
                     )}
                     <button 
                         onClick={() => setAppointmentModalOpen(true)}
-                        className="flex items-center gap-2 bg-gold text-onyx px-4 py-2 rounded-lg shadow-sm hover:bg-gold/90 transition-colors font-semibold">
+                        className="flex items-center gap-2 bg-indian-red text-white px-4 py-2 rounded-lg shadow-sm hover:bg-indian-red/90 transition-colors font-semibold">
                         <PlusCircle size={20} /> New Appointment
                     </button>
                 </div>
@@ -144,7 +149,7 @@ const AppointmentsPage = () => {
                                 <th className="p-4 text-left">
                                     <input 
                                         type="checkbox"
-                                        className="h-4 w-4 rounded"
+                                        className="h-4 w-4 rounded border-gray-300 text-indian-red focus:ring-indian-red"
                                         onChange={handleSelectAll}
                                         checked={filteredAppointments.length > 0 && selectedAppointmentIds.length === filteredAppointments.length}
                                      />
@@ -157,14 +162,14 @@ const AppointmentsPage = () => {
                         </thead>
                          <tbody className="divide-y divide-onyx/10">
                             {isLoading ? (
-                                <tr><td colSpan="5" className="text-center py-8 text-onyx/60">Loading...</td></tr>
+                                <tr><td colSpan={5} className="text-center py-8 text-onyx/60">Loading...</td></tr>
                             ) : filteredAppointments.length > 0 ? (
                                 filteredAppointments.map(appt => (
                                     <tr key={appt.id} className={selectedAppointmentIds.includes(appt.id) ? 'bg-seashell-600' : ''}>
                                         <td className="p-4">
                                             <input 
                                                 type="checkbox"
-                                                className="h-4 w-4 rounded"
+                                                className="h-4 w-4 rounded border-gray-300 text-indian-red focus:ring-indian-red"
                                                 checked={selectedAppointmentIds.includes(appt.id)}
                                                 onChange={() => handleSelect(appt.id)}
                                             />
@@ -184,7 +189,7 @@ const AppointmentsPage = () => {
                                     </tr>
                                 ))
                             ) : (
-                                <tr><td colSpan="5" className="text-center py-8 text-onyx/60">No appointments found.</td></tr>
+                                <tr><td colSpan={5} className="text-center py-8 text-onyx/60">No appointments found.</td></tr>
                             )}
                         </tbody>
                     </table>

@@ -5,29 +5,21 @@ import { z } from 'zod';
 import { X } from 'lucide-react';
 import { useCreateClient } from '../hooks/api';
 
-interface NewClientModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onClientCreated: () => void;
-}
-
-const clientSchema = z.object({
-    name: z.string().min(1, 'Full Name is required.'),
-    email: z.string().email('Invalid email address.'),
-    phone: z.string().optional(),
-    gender: z.string().optional(),
-});
-
-type NewClientFormData = z.infer<typeof clientSchema>;
-
-const NewClientModal = ({ isOpen, onClose, onClientCreated }: NewClientModalProps) => {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<NewClientFormData>({
+const NewClientModal = ({ isOpen, onClose, onClientCreated }) => {
+    const clientSchema = z.object({
+        name: z.string().min(1, 'Full Name is required.'),
+        email: z.string().email('Invalid email address.'),
+        phone: z.string().optional(),
+        gender: z.string().optional(),
+    });
+    
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: zodResolver(clientSchema),
     });
 
     const createClient = useCreateClient();
 
-    const onSubmit = (data: NewClientFormData) => {
+    const onSubmit = (data) => {
         createClient.mutate(data, {
             onSuccess: () => {
                 onClientCreated();
@@ -40,10 +32,12 @@ const NewClientModal = ({ isOpen, onClose, onClientCreated }: NewClientModalProp
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
-                <button onClick={onClose} className="absolute top-3 right-3 text-onyx/50 hover:text-onyx"><X size={24} /></button>
-                <h2 className="text-2xl font-bold mb-4 text-onyx">New Client</h2>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-md flex flex-col">
+                <div className="flex justify-between items-center p-4 border-b border-onyx/10">
+                    <h2 className="text-xl font-bold text-onyx">New Client</h2>
+                    <button onClick={onClose} className="text-onyx/50 hover:text-onyx"><X size={24} /></button>
+                </div>
+                <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-onyx/80">Full Name <span className="text-indian-red">*</span></label>
                         <input {...register('name')} className="mt-1 block w-full p-2 border border-onyx/20 rounded-md bg-seashell-700" />
@@ -63,8 +57,8 @@ const NewClientModal = ({ isOpen, onClose, onClientCreated }: NewClientModalProp
                         <input {...register('gender')} className="mt-1 block w-full p-2 border border-onyx/20 rounded-md bg-seashell-700" />
                     </div>
                     <div className="pt-4 flex justify-end gap-2">
-                         <button type="button" onClick={onClose} className="bg-onyx/10 text-onyx px-4 py-2 rounded-md hover:bg-onyx/20">Cancel</button>
-                         <button type="submit" className="bg-indian-red text-white px-4 py-2 rounded-md hover:bg-indian-red/90">Save Client</button>
+                         <button type="submit" className="bg-indian-red text-white px-4 py-2 rounded-md hover:bg-indian-red/90">Create Client Profile</button>
+                         <button type="button" onClick={onClose} className="bg-onyx/10 text-onyx px-4 py-2 rounded-md hover:bg-onyx/20">Close</button>
                     </div>
                 </form>
             </div>

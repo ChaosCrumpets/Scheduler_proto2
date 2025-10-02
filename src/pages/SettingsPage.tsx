@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Paperclip } from 'lucide-react';
 import { useProcedures } from '../hooks/api';
 
 const ClinicProfileModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg relative">
-                 <button onClick={onClose} className="absolute top-3 right-3 text-onyx/50 hover:text-onyx"><X size={24} /></button>
-                <h2 className="text-2xl font-bold mb-4 text-onyx">Clinic Profile</h2>
-                 <div className="space-y-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-lg flex flex-col">
+                <div className="flex justify-between items-center p-4 border-b border-onyx/10">
+                    <h2 className="text-xl font-bold text-onyx">Clinic Profile</h2>
+                    <button onClick={onClose} className="text-onyx/50 hover:text-onyx"><X size={24} /></button>
+                </div>
+                 <div className="p-6 space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-onyx/80">Clinic Name</label>
                         <input type="text" className="mt-1 block w-full p-2 border border-onyx/20 rounded-md bg-seashell-700" defaultValue="MediBooks" />
@@ -53,20 +55,22 @@ const EditProceduresModal = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl relative">
-                <button onClick={onClose} className="absolute top-3 right-3 text-onyx/50 hover:text-onyx"><X size={24} /></button>
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-onyx">Edit/Add Procedures</h2>
-                    <button onClick={() => setIsAdding(true)} className="bg-indian-red text-white px-3 py-1 rounded-md text-sm">Add</button>
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl flex flex-col">
+                 <div className="flex justify-between items-center p-4 border-b border-onyx/10">
+                    <h2 className="text-xl font-bold text-onyx">Edit/Add Procedures</h2>
+                    <div className="flex items-center gap-4">
+                        <button onClick={() => setIsAdding(true)} className="bg-indian-red text-white px-3 py-1 rounded-md text-sm">Add</button>
+                        <button onClick={onClose} className="text-onyx/50 hover:text-onyx"><X size={24} /></button>
+                    </div>
                 </div>
-                <div className="max-h-[60vh] overflow-y-auto">
+                <div className="max-h-[60vh] overflow-y-auto p-6">
                     {isLoading ? <p>Loading procedures...</p> : (
                         <ul className="space-y-3">
                             {isAdding && (
                                 <li className="p-3 bg-seashell-600 rounded-lg flex items-center gap-4">
                                     <input placeholder="Procedure Name" className="flex-1 p-1 border rounded-md" />
                                     <input placeholder="Price" type="number" className="w-24 p-1 border rounded-md" />
-                                    <input placeholder="Duration" type="number" className="w-24 p-1 border rounded-md" />
+                                    <input placeholder="Duration (min)" type="number" className="w-24 p-1 border rounded-md" />
                                     <button onClick={handleSave} className="bg-gold px-3 py-1 text-xs rounded-md">Save</button>
                                 </li>
                             )}
@@ -95,9 +99,30 @@ const EditProceduresModal = ({ isOpen, onClose }) => {
     );
 };
 
+const ChangePictureModal = ({ isOpen, onClose }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-sm flex flex-col">
+                 <div className="flex justify-between items-center p-4 border-b border-onyx/10">
+                    <h2 className="text-xl font-bold text-onyx">Change Profile Picture</h2>
+                    <button onClick={onClose} className="text-onyx/50 hover:text-onyx"><X size={24} /></button>
+                </div>
+                <div className="p-6 flex flex-col items-center justify-center">
+                    <button className="flex items-center gap-2 bg-gold text-onyx px-4 py-2 rounded-lg shadow-sm hover:bg-gold/90 transition-colors font-semibold">
+                        <Paperclip size={16} />
+                        Upload from Files
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const SettingsPage = () => {
     const [isProfileModalOpen, setProfileModalOpen] = useState(false);
     const [isProceduresModalOpen, setProceduresModalOpen] = useState(false);
+    const [isPictureModalOpen, setPictureModalOpen] = useState(false);
 
   return (
     <div className="space-y-8">
@@ -109,9 +134,12 @@ const SettingsPage = () => {
       <div className="space-y-6">
         <div>
             <h2 className="text-xl font-semibold text-onyx border-b border-onyx/10 pb-2">Profile Settings</h2>
-            <div className="mt-4">
+            <div className="mt-4 flex flex-col items-start gap-4">
                 <button onClick={() => setProfileModalOpen(true)} className="bg-white text-onyx px-4 py-2 rounded-lg shadow-sm border border-onyx/10 hover:bg-seashell-600 transition-colors font-semibold">
                     Edit Clinic Profile
+                </button>
+                <button onClick={() => setPictureModalOpen(true)} className="bg-white text-onyx px-4 py-2 rounded-lg shadow-sm border border-onyx/10 hover:bg-seashell-600 transition-colors font-semibold">
+                    Change Profile Picture
                 </button>
             </div>
         </div>
@@ -127,6 +155,7 @@ const SettingsPage = () => {
 
       <ClinicProfileModal isOpen={isProfileModalOpen} onClose={() => setProfileModalOpen(false)} />
       <EditProceduresModal isOpen={isProceduresModalOpen} onClose={() => setProceduresModalOpen(false)} />
+      <ChangePictureModal isOpen={isPictureModalOpen} onClose={() => setPictureModalOpen(false)} />
     </div>
   );
 };

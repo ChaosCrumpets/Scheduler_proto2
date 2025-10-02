@@ -96,10 +96,12 @@ const AppointmentModal = ({ isOpen, onClose, event }: AppointmentModalProps) => 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg relative">
-        <button onClick={onClose} className="absolute top-3 right-3 text-onyx/50 hover:text-onyx"><X size={24} /></button>
-        <h2 className="text-2xl font-bold mb-4 text-onyx">{isEditing ? 'Edit' : 'New'} Appointment</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg flex flex-col">
+        <div className="flex justify-between items-center p-4 border-b border-onyx/10">
+            <h2 className="text-xl font-bold text-onyx">{isEditing ? 'Edit' : 'New'} Appointment</h2>
+            <button onClick={onClose} className="text-onyx/50 hover:text-onyx"><X size={24} /></button>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
             <div>
               <label className="block text-sm font-medium text-onyx/80">Client</label>
               <Controller name="client" control={control} rules={{ required: true }}

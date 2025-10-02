@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import moment from 'moment';
 import { useClients, useAppointmentsByClient } from '../hooks/api';
-import { PlusCircle, Search, X } from 'lucide-react';
 import { Client } from '../types';
+import moment from 'moment';
+import { PlusCircle, Search, X } from 'lucide-react';
 import NewClientModal from '../components/NewClientModal';
 
 const PastAppointmentsModal = ({ isOpen, onClose, client }) => {
@@ -12,10 +12,12 @@ const PastAppointmentsModal = ({ isOpen, onClose, client }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl relative">
-                <button onClick={onClose} className="absolute top-3 right-3 text-onyx/50 hover:text-onyx"><X size={24} /></button>
-                <h2 className="text-2xl font-bold mb-4 text-onyx">Appointment History for {client?.name}</h2>
-                <div className="max-h-[60vh] overflow-y-auto">
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl flex flex-col">
+                <div className="flex justify-between items-center p-4 border-b border-onyx/10">
+                    <h2 className="text-xl font-bold text-onyx">Appointment History for {client?.name}</h2>
+                    <button onClick={onClose} className="text-onyx/50 hover:text-onyx"><X size={24} /></button>
+                </div>
+                <div className="max-h-[60vh] overflow-y-auto p-6">
                     <table className="min-w-full">
                         <thead className="sticky top-0 bg-seashell-600">
                              <tr>
@@ -27,7 +29,7 @@ const PastAppointmentsModal = ({ isOpen, onClose, client }) => {
                         </thead>
                         <tbody className="divide-y divide-onyx/10">
                             {isLoading ? (
-                                <tr><td colSpan="4" className="text-center py-8 text-onyx/60">Loading history...</td></tr>
+                                <tr><td colSpan={4} className="text-center py-8 text-onyx/60">Loading history...</td></tr>
                             ) : appointments && appointments.length > 0 ? (
                                 appointments.map(appt => (
                                     <tr key={appt.id}>
@@ -38,7 +40,7 @@ const PastAppointmentsModal = ({ isOpen, onClose, client }) => {
                                     </tr>
                                 ))
                             ) : (
-                                <tr><td colSpan="4" className="text-center py-8 text-onyx/60">No past appointments found.</td></tr>
+                                <tr><td colSpan={4} className="text-center py-8 text-onyx/60">No past appointments found.</td></tr>
                             )}
                         </tbody>
                     </table>

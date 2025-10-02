@@ -4,7 +4,6 @@ import moment from 'moment';
 import { PlusCircle, ArrowUp, ArrowDown, DollarSign, BarChart, Send, Users, Calendar as CalendarIcon } from 'lucide-react';
 import { useAppointments } from '../hooks/api';
 import AppointmentModal from '../components/AppointmentModal';
-import { AppointmentEvent } from '../types';
 import NewClientModal from '../components/NewClientModal';
 
 const localizer = momentLocalizer(moment);
